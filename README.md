@@ -9,7 +9,7 @@
     JWT_SECRET=your_secret_key
     PORT=3000
     ```
-4. Start the server: `npm start`
+4. Start the server 
 
 ## Endpoints
 
@@ -22,9 +22,8 @@
 - `PUT /cards/:id`: Update an existing card (requires JWT).
 - `DELETE /cards/:id`: Delete an existing card (requires JWT).
 
-### Additional Features
-- `GET /sets`: Retrieve a list of all card sets.
-- `GET /types`: Retrieve a list of all card types.
-- `GET /rarities`: Retrieve a list of all card rarities.
-- `GET /cards/count`: Retrieve the total number of cards.
-- `GET /cards/random`: Retrieve information about a randomly selected card.
+### To Add
+- Card Management needs to be fixed/implemented
+    - Card Edit
+    - Card Delete
+
