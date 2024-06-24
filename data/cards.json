@@ -1,0 +1,51 @@
+[
+  {
+    "cardId": "1",
+    "name": "Fire Elemental",
+    "set": "Base Set",
+    "type": "Creature",
+    "rarity": "Common"
+  },
+  {
+    "cardId": "2",
+    "name": "Earth Elemental",
+    "set": "Base Set",
+    "type": "Creature",
+    "rarity": "Common"
+  },
+  {
+    "cardId": "3",
+    "name": "Air Elemental",
+    "set": "Base Set",
+    "type": "Creature",
+    "rarity": "Common"
+  },
+  {
+    "cardId": "4",
+    "name": "Lightning Elemental",
+    "set": "Base Set",
+    "type": "Creature",
+    "rarity": "Common"
+  },
+  {
+    "cardId": "5",
+    "name": "Ice Elemental",
+    "set": "Base Set",
+    "type": "Creature",
+    "rarity": "Common"
+  },
+  {
+    "cardId": "6",
+    "name": "Plasma guh",
+    "set": "Item Set",
+    "type": "Item",
+    "rarity": "Uncommon"
+  },
+  {
+    "cardId": "7",
+    "name": "W",
+    "set": "fixed",
+    "type": "fixed",
+    "rarity": "fixed"
+  }
+]

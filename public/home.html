@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Welcome to the Collectible Card Game</h1>
+    <button onclick="navigateTo('/createCard')">Create Card</button>
+    <button onclick="navigateTo('/cards')">View All Cards</button>
+    <button onclick="navigateTo('/sets')">View Sets</button>
+    <button onclick="navigateTo('/types')">View Types</button>
+    <button onclick="navigateTo('/rarities')">View Rarities</button>
+    <button onclick="navigateTo('/cards/count')">Card Count</button>
+    <button onclick="navigateTo('/cards/random')">Random Card</button>
+
+    <script>
+        function navigateTo(path) {
+            const token = new URLSearchParams(window.location.search).get('token');
+            window.location.href = `${path}?token=${token}`;
+        }
+    </script>
+</body>
+</html>
