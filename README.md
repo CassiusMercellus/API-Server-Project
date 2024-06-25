@@ -17,13 +17,5 @@
 - `POST /getToken`: Authenticate user and return a JWT token.
 
 ### Card Management
-- `GET /cards`: Retrieve all cards with optional query parameters for filtering.
-- `POST /cards/create`: Create a new card (requires JWT).
-- `PUT /cards/:id`: Update an existing card (requires JWT).
-- `DELETE /cards/:id`: Delete an existing card (requires JWT).
-
-### To Add
-- Card Management needs to be fixed/implemented
-    - Card Edit
-    - Card Delete
-
+- To Create a card create a new card with a unique ID
+- To edit a card create a new card with a matching ID the old data will be replaced with the new.
