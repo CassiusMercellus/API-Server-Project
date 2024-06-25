@@ -31,13 +31,6 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send({ errorMessage: 'Something went wrong!' });
-});
-
-// Function to read cards.json
 // Function to read cards.json
 const readCardsFile = () => {
     const cardsFilePath = './data/cards.json';
@@ -55,25 +48,54 @@ const readCardsFile = () => {
     }
 };
 
+// Function to write data to cards.json
+const writeCardsFile = (data) => {
+    const cardsFilePath = './data/cards.json';
+    try {
+        fs.writeFileSync(cardsFilePath, JSON.stringify(data, null, 2));
+    } catch (error) {
+        console.error('Error writing cards data:', error);
+        throw new Error('Error writing cards data.');
+    }
+};
 
 // Root endpoint redirecting to login page
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
+// Endpoint to fetch all cards
+app.get('/cards', (req, res) => {
+    try {
+        const cards = readCardsFile();
+        res.json(cards);
+    } catch (error) {
+        console.error('Error fetching cards:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 // Authentication endpoint
 app.post('/getToken', (req, res) => {
     const { username, password } = req.body;
+    console.log(`Attempting to log in with username: ${username}`);
     
     const users = JSON.parse(fs.readFileSync('./data/users.json', 'utf-8'));
     const user = users.find(u => u.username === username);
     
-    if (!user || password !== user.password) {
+    if (!user) {
+        console.log(`User not found: ${username}`);
         return res.status(401).send({ errorMessage: 'Invalid credentials' });
     }
     
-    const accessToken = jwt.sign({ username: user.username }, JWT_SECRET, { expiresIn: '1h' });
-    res.redirect(`/home?token=${accessToken}`);
+    if (password === user.password) {
+        const accessToken = jwt.sign({ username: user.username }, JWT_SECRET, { expiresIn: '1h' });
+        console.log(`Authentication successful for user: ${username}`);
+        res.redirect(`/home?token=${accessToken}`);
+    } else {
+        console.log(`Invalid password for user: ${username}`);
+        res.status(401).send({ errorMessage: 'Invalid credentials' });
+    }
 });
 
 // Home page
@@ -91,32 +113,28 @@ app.get('/home', (req, res) => {
     });
 });
 
-// Endpoint to retrieve all cards
-app.get('/cards', (req, res) => {
-    try {
-        const cards = readCardsFile();
-        res.json(cards);
-    } catch (error) {
-        console.error('Error fetching cards:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-
-// Endpoint to create a new card
+// CRUD operations for cards
 app.post('/cards/create', authenticateToken, (req, res) => {
     try {
         const cards = readCardsFile();
         const newCard = req.body;
 
-        if (cards.find(card => card.cardId === newCard.cardId)) {
-            return res.status(400).send({ errorMessage: 'Card ID must be unique' });
+        // Check if card ID exists
+        const existingCardIndex = cards.findIndex(card => card.cardId === newCard.cardId);
+        
+        if (existingCardIndex !== -1) {
+            // Update existing card
+            cards[existingCardIndex] = newCard;
+            writeCardsFile(cards);
+            res.send({ successMessage: 'Card updated successfully', card: newCard });
+        } else {
+            // Add new card
+            cards.push(newCard);
+            writeCardsFile(cards);
+            res.send({ successMessage: 'Card created successfully', card: newCard });
         }
-
-        cards.push(newCard);
-        fs.writeFileSync('./data/cards.json', JSON.stringify(cards, null, 2));
-        res.send({ successMessage: 'Card created successfully', card: newCard });
     } catch (error) {
-        console.error('Error creating card:', error);
+        console.error('Error processing card creation:', error);
         res.status(500).send({ errorMessage: 'Internal Server Error' });
     }
 });
@@ -184,7 +202,6 @@ app.get('/cards/random', (req, res) => {
     res.json(randomCard);
 });
 
-// Endpoint to serve HTML form for creating a card
 app.get('/createCard', (req, res) => {
     const token = req.query.token;
     res.send(`
